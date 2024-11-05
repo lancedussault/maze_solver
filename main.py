@@ -1,4 +1,5 @@
-from classes import *
+from graphics import Window
+from maze import Maze
 
 def main ():
     num_rows = 12
