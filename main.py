@@ -9,9 +9,9 @@ def main ():
     cell_size_x = (screen_x - 2 * margin) / num_cols
     cell_size_y = (screen_y - 2 * margin) / num_rows
     window = Window(screen_x, screen_y)
-    seed = 1
+    seed = 10
 
-    maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, window)
+    maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, window, seed)
 
     window.wait_for_close()
 

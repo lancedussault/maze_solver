@@ -123,13 +123,12 @@ class Maze:
         self._cell_size_x = cell_size_x
         self._cell_size_y = cell_size_y
         self._window = window
-        self.seed = seed
+        if seed:
+            random.seed(seed)
         
         self._create_cells()
         self._break_entrance_and_exit()
-        
-        if self.seed is not None:
-            random.seed(seed)
+        self._break_walls_r(0, 0)
 
     def _create_cells(self):
         for i in range(self._num_cols):
@@ -167,20 +166,38 @@ class Maze:
         self._draw_cell(self._num_cols - 1, self._num_rows - 1)
 
     def _break_walls_r (self, i, j):
-        current = self._cells[i][j]
-        current.visited = True
+        self._cells[i][j].visited = True
 
         while True:
-            new_list = []
-            if i + 1 < len(self._cells) and self._cells[i + 1][j].visited == False:
-                self._cells[i + 1][j].visited = True
-                new_list.append((i + 1, j))
-            if i - 1 >= 0 and self._cells[i - 1][j].visited == False:
-                self._cells[i - 1][j].visited = True
-                new_list.append((i - 1, j))
-            if j + 1 < len(self._cells) and self._cells[i][j + 1].visited == False:
-                self._cells[i][j + 1].visited = True
-                new_list.append((i, j + 1))
-            if j - 1 >= 0 and self._cells[i][j - 1].visited == False:
-                self._cells[i][j - 1].visited = True
-                new_list.append((i, j - 1))
+            next_index_list = []
+            
+            if i > 0 and not self._cells[i - 1][j].visited:
+                next_index_list.append((i - 1, j))
+            if i < self._num_cols - 1 and not self._cells[i + 1][j].visited:
+                next_index_list.append((i + 1, j))
+            if j > 0 and not self._cells[i][j - 1].visited:
+                next_index_list.append((i, j - 1))
+            if j < self._num_rows - 1 and not self._cells[i][j + 1].visited:
+                next_index_list.append((i, j + 1))
+            
+            if len(next_index_list) == 0:
+                self._draw_cell(i, j)
+                return 
+        
+            direction_index = random.randrange(len(next_index_list))
+            next_index = next_index_list[direction_index]
+
+            if next_index[0] == i + 1:
+                self._cells[i][j].has_right_wall = False
+                self._cells[i + 1][j].has_left_wall = False
+            if next_index[0] == i - 1:
+                self._cells[i][j].has_left_wall = False
+                self._cells[i - 1][j].has_right_wall = False
+            if next_index[1] == j + 1:
+                self._cells[i][j].has_bottom_wall = False
+                self._cells[i][j + 1].has_top_wall = False
+            if next_index[1] == j - 1:
+                self._cells[i][j].has_top_wall = False
+                self._cells[i][j - 1].has_bottom_wall = False
+
+            self._break_walls_r(next_index[0], next_index[1])
