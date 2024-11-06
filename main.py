@@ -13,6 +13,12 @@ def main ():
     seed = 10
 
     maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, window, seed)
+    print("maze created")
+    is_solveable = maze.solve()
+    if not is_solveable:
+        print("maze can not be solved!")
+    else:
+        print("maze solved!")
 
     window.wait_for_close()
 
